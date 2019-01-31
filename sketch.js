@@ -14,6 +14,7 @@ function setup() {
 }
 
 function draw() {
+    keyCheck();
     if(piecey.y > 24){
         piecey = new piece();
     }
@@ -27,6 +28,14 @@ function draw() {
     frame++;
     if(frame>30){
         frame=1;
+    }
+}
+function keyCheck(){
+    if(keyIsDown(LEFT_ARROW)){
+        piecey.x--;
+    }
+    else if(keyIsDown(RIGHT_ARROW)){
+        piecey.x++;
     }
 }
 class gameBoard {
