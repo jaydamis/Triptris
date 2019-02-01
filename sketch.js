@@ -48,6 +48,9 @@ function keyPressed(){
     if(keyCode == RIGHT_ARROW){
         piecey.moveRight();
     }
+    if(keyCode == DOWN_ARROW){
+        piecey.slamDown();
+    }
 }
 class gameBoard {
     constructor(){
@@ -154,6 +157,13 @@ class piece {
                 this.squares[i].moveRight();
             }
         }       
+    }
+    slamDown(){
+        while(this.checkCollision("DOWN")!=true){
+            for(var i=0;i<this.squares.length;i++){
+                this.squares[i].drop();
+            }            
+        }
     }
     checkCollision(direction){
         if(direction=="DOWN"){
