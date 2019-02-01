@@ -14,7 +14,7 @@ function setup() {
 }
 
 function draw() {
-    keyCheck();
+    //keyCheck();
     background(bkgrndColor);
     gmBoard.draw();
     //gmBoard.randomize();
@@ -31,12 +31,21 @@ function draw() {
         frame=1;
     }
 }
-function keyCheck(){
-    if(keyIsDown(LEFT_ARROW)){
-        piecey.x--;
+// function keyCheck(){
+//     if(keyIsDown(LEFT_ARROW)){
+//         piecey.moveLeft();
+//     }
+//     else if(keyIsDown(RIGHT_ARROW)){
+//         piecey.x++;
+//     }
+// }
+
+function keyPressed(){
+    if(keyCode == LEFT_ARROW){
+        piecey.moveLeft();
     }
-    else if(keyIsDown(RIGHT_ARROW)){
-        piecey.x++;
+    if(keyCode == RIGHT_ARROW){
+        piecey.moveRight();
     }
 }
 class gameBoard {
@@ -130,6 +139,20 @@ class piece {
             }
         }
     }
+    moveLeft(){
+        if(this.checkCollision("LEFT")!=true){
+            for(var i=0;i<this.squares.length;i++){
+                this.squares[i].moveLeft();
+            }
+        }
+    }
+    moveRight(){
+        if(this.checkCollision("RIGHT")!=true){
+            for(var i=0;i<this.squares.length;i++){
+                this.squares[i].moveRight();
+            }
+        }       
+    }
     checkCollision(direction){
         if(direction=="DOWN"){
             //Hit the floor?
@@ -152,7 +175,44 @@ class piece {
                 }
             }
         }
+        if(direction=="LEFT"){
+            for(var i=0;i<this.squares.length;i++){
+                if(this.squares[i].x-1<0){
+                    return true;
+                }
+            }
+            for(var i=0;i<this.squares.length;i++){
+                for(var j=0;j<gmBoard.pieces.length;j++){
+                    for(var k=0;k<gmBoard.pieces[j].squares.length;k++){
+                        if(this.squares[i].x-1 == gmBoard.pieces[j].squares[k].x &&
+                            this.squares[i].y == gmBoard.pieces[j].squares[k].y){
+                                return true;
+                            }
+                    }
+                }
+            }
+        }
+        if(direction=="RIGHT"){
+            for(var i=0;i<this.squares.length;i++){
+                if(this.squares[i].x+1>31){
+                    return true;
+                }
+            }
+            for(var i=0;i<this.squares.length;i++){
+                for(var j=0;j<gmBoard.pieces.length;j++){
+                    for(var k=0;k<gmBoard.pieces[j].squares.length;k++){
+                        if(this.squares[i].x+1 == gmBoard.pieces[j].squares[k].x &&
+                            this.squares[i].y == gmBoard.pieces[j].squares[k].y){
+                                return true;
+                            }
+                    }
+                }
+            }
+        }
         return false;
+    }
+    checkCollisionByRelativeXY(){
+
     }
 }
 
@@ -168,6 +228,12 @@ class square {
     }
     drop(){
         this.y++;
+    }
+    moveLeft() {
+        this.x--;
+    }
+    moveRight(){
+        this.x++;
     }
 }
 
