@@ -1,5 +1,6 @@
 var canvasWidth = 640;
 var canvasHeight = 480;
+var gameWidth = 20;
 var bkgrndColor = [0,0,0];
 var gmBoard;
 var piecey
@@ -55,6 +56,7 @@ class gameBoard {
         for(var i=0;i<this.tiles.length;i++){
             this.tiles[i] = new Array(24);
         }
+        this.minx = (32-gameWidth)/2;
     }
     draw() {
         // for(var i=0;i<this.tiles.length;i++){
@@ -194,7 +196,7 @@ class piece {
         }
         if(direction=="RIGHT"){
             for(var i=0;i<this.squares.length;i++){
-                if(this.squares[i].x+1>31){
+                if(this.squares[i].x+1>gameWidth-1){
                     return true;
                 }
             }
@@ -224,7 +226,7 @@ class square {
     }
     draw() {
         fill(this.color);
-        rect(this.x*20,this.y*20,20,20);
+        rect((gmBoard.minx+this.x)*20,(this.y)*20,20,20);
     }
     drop(){
         this.y++;
