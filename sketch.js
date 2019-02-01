@@ -17,7 +17,7 @@ function draw() {
     keyCheck();
     background(bkgrndColor);
     gmBoard.draw();
-    gmBoard.randomize();
+    //gmBoard.randomize();
     piecey.draw();
     if(frame%10==0){
         piecey.update();
@@ -132,10 +132,23 @@ class piece {
     }
     checkCollision(direction){
         if(direction=="DOWN"){
+            //Hit the floor?
             for(var i=0;i<this.squares.length;i++){
                 if(this.squares[i].y==23){
                     this.status = "REST"
                     return true;
+                }
+            }
+            //Hit another piece?
+            for(var i=0;i<this.squares.length;i++){
+                for(var j=0;j<gmBoard.pieces.length;j++){
+                    for(var k=0;k<gmBoard.pieces[j].squares.length;k++){
+                        if(this.squares[i].x == gmBoard.pieces[j].squares[k].x &&
+                            this.squares[i].y+1 == gmBoard.pieces[j].squares[k].y){
+                                this.status = "REST";
+                                return true;
+                            }
+                    }
                 }
             }
         }
