@@ -7,18 +7,17 @@ var piecey
 var frame = 1;
 
 function setup() {
-    gmBoard = new gameBoard();
     createCanvas(canvasWidth,canvasHeight);
     background(bkgrndColor);
+    gmBoard = new gameBoard();
     gmBoard.randomize();
     piecey = new piece();
 }
 
 function draw() {
-    //keyCheck();
     background(bkgrndColor);
+    gmBoard.checkLineCompletion();
     gmBoard.draw();
-    //gmBoard.randomize();
     piecey.draw();
     if(frame%10==0){
         piecey.update();
@@ -32,14 +31,6 @@ function draw() {
         frame=1;
     }
 }
-// function keyCheck(){
-//     if(keyIsDown(LEFT_ARROW)){
-//         piecey.moveLeft();
-//     }
-//     else if(keyIsDown(RIGHT_ARROW)){
-//         piecey.x++;
-//     }
-// }
 
 function keyPressed(){
     if(keyCode == LEFT_ARROW){
@@ -54,23 +45,36 @@ function keyPressed(){
 }
 class gameBoard {
     constructor(){
-        this.tiles = new Array(32);
         this.pieces = new Array();
+        this.tiles = new Array(32);
         for(var i=0;i<this.tiles.length;i++){
             this.tiles[i] = new Array(24);
         }
         this.minx = (32-gameWidth)/2;
     }
     draw() {
-        // for(var i=0;i<this.tiles.length;i++){
-        //     for(var j=0;j<this.tiles[i].length;j++){
-        //         fill(this.tiles[i][j].color);
-        //         ellipse(i*20+10,j*20+10,20,20);
-        //     }
-        // }
         for(var i=0;i<this.pieces.length;i++){
             this.pieces[i].draw();
         }
+    }
+    //Check each line to see if it is as wide as the game board.
+    checkLineCompletion(){
+        //Put each non moving game piece an an array of x and y values.
+        var filled = new Array()
+        for(var i=0;i<this.pieces.length;i++){
+            for(var sq=0;sq<this.pieces[i].squares.length;sq++){
+                filled.push([this.pieces[i].squares[sq].x,this.pieces[i].squares[sq].y]);
+            }
+        }
+        //loop through each y value and see if there are enough x values to fill the width
+        for(var i=0;i<24;i++){
+            var line = filled.filter(element => element[1]==i)
+            if(line.length>=gameWidth){
+                bkgrndColor = [0,45,54]
+            }
+        }
+        console.log(filled.filter(element => element[1]==23))
+        
     }
     randomize() {
         for(var i=0;i<this.tiles.length;i++){
