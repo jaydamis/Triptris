@@ -42,6 +42,9 @@ function keyPressed(){
     if(keyCode == DOWN_ARROW){
         piecey.slamDown();
     }
+    if(keyCode == UP_ARROW){
+        piecey.rotate();
+    }
 }
 class gameBoard {
     constructor(){
@@ -88,6 +91,7 @@ class gameBoard {
 class piece {
     constructor() {
         this.status = "PRIMARY";
+        this.rotation = 0;
         var x=10;
         var y=0;
         this.color=[random()*255,random()*255,random()*255]
@@ -169,6 +173,24 @@ class piece {
             }            
         }
     }
+    rotate(){
+        if(this.type=="line"){
+            var dir = -1;
+            if(this.rotation==0){
+                dir = 1;
+                this.rotation = 1;
+            }
+            else{
+                this.rotation = 0;
+            }
+            this.squares[0].x = this.squares[0].x-(1*dir);
+            this.squares[0].y = this.squares[0].y+(1*dir);
+            this.squares[2].x = this.squares[2].x+(1*dir);
+            this.squares[2].y = this.squares[2].y-(1*dir);
+            this.squares[3].x = this.squares[3].x+(2*dir);
+            this.squares[3].y = this.squares[3].y-(2*dir);
+        }
+    }
     checkCollision(direction){
         if(direction=="DOWN"){
             //Hit the floor?
@@ -225,10 +247,10 @@ class piece {
                 }
             }
         }
-        return false;
-    }
-    checkCollisionByRelativeXY(){
+        if(direction=="NONE"){
 
+        }
+        return false;
     }
 }
 
