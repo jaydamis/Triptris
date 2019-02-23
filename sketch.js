@@ -43,7 +43,7 @@ function keyPressed(){
         piecey.slamDown();
     }
     if(keyCode == UP_ARROW){
-        piecey.rotate(1);
+        piecey.rotate();
     }
 }
 class gameBoard {
@@ -279,6 +279,9 @@ class piece {
         }
         if(direction=="NONE"){
             for(var i=0; i<this.squares.length;i++){
+                if(this.squares[i].x < 0 || this.squares[i].x > gameWidth-1 || this.squares[i].y < 0){
+                    return true;
+                }
                 for(var j=0;j<gmBoard.pieces.length;j++){
                     for(var k=0;k<gmBoard.pieces[j].squares.length;k++){
                         if(this.squares[i].x == gmBoard.pieces[j].squares[k].x &&
