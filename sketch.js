@@ -43,7 +43,7 @@ function keyPressed(){
         piecey.slamDown();
     }
     if(keyCode == UP_ARROW){
-        piecey.rotate();
+        piecey.rotate(1);
     }
 }
 class gameBoard {
@@ -76,7 +76,7 @@ class gameBoard {
                 bkgrndColor = [0,45,54]
             }
         }
-        console.log(filled.filter(element => element[1]==23))
+        //console.log(filled.filter(element => element[1]==23))
         
     }
     randomize() {
@@ -190,6 +190,12 @@ class piece {
             this.squares[3].x = this.squares[3].x+(2*dir);
             this.squares[3].y = this.squares[3].y-(2*dir);
         }
+        if(this.type=="elBlock"){
+            
+        }
+        if(this.checkCollision("NONE")){
+            this.rotate();
+        }
     }
     checkCollision(direction){
         if(direction=="DOWN"){
@@ -248,7 +254,16 @@ class piece {
             }
         }
         if(direction=="NONE"){
-
+            for(var i=0; i<this.squares.length;i++){
+                for(var j=0;j<gmBoard.pieces.length;j++){
+                    for(var k=0;k<gmBoard.pieces[j].squares.length;k++){
+                        if(this.squares[i].x == gmBoard.pieces[j].squares[k].x &&
+                            this.squares[i].y == gmBoard.pieces[j].squares[k].y){
+                                return true;
+                            }
+                    }
+                }
+            }
         }
         return false;
     }
