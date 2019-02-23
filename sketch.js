@@ -42,6 +42,9 @@ function keyPressed(){
     if(keyCode == DOWN_ARROW){
         piecey.slamDown();
     }
+    if(keyCode == UP_ARROW){
+        piecey.rotate();
+    }
 }
 class gameBoard {
     constructor(){
@@ -73,7 +76,7 @@ class gameBoard {
                 bkgrndColor = [0,45,54]
             }
         }
-        console.log(filled.filter(element => element[1]==23))
+        //console.log(filled.filter(element => element[1]==23))
         
     }
     randomize() {
@@ -88,6 +91,12 @@ class gameBoard {
 class piece {
     constructor() {
         this.status = "PRIMARY";
+        this.rotation = 0;
+        this.rotationTransform = 
+            [[[0,0],[0,0],[0,0],[0,0]],
+            [[0,0],[0,0],[0,0],[0,0]],
+            [[0,0],[0,0],[0,0],[0,0]],
+            [[0,0],[0,0],[0,0],[0,0]]];
         var x=10;
         var y=0;
         this.color=[random()*255,random()*255,random()*255]
@@ -106,6 +115,12 @@ class piece {
             this.squares.push(new square(x+1,y,this.color));
             this.squares.push(new square(x+1,y+1,this.color));
             this.squares.push(new square(x+1,y+2,this.color));
+            this.rotationTransform = [
+                [[0,2],[-1,1],[0,0],[1,-1]],
+                [[2,0],[1,1],[0,0],[-1,-1]],
+                [[0,-2],[1,-1],[0,0],[-1,1]],
+                [[-2,0],[-1,-1],[0,0],[1,1]]
+            ];
         }
         else if(typeID==2){
             this.type = "reverseElBlock";
@@ -113,6 +128,12 @@ class piece {
             this.squares.push(new square(x+1,y+1,this.color));
             this.squares.push(new square(x+1,y+2,this.color));
             this.squares.push(new square(x,y+2,this.color));
+            this.rotationTransform = [
+                [[-1,1],[0,0],[1,-1],[2,0]],
+                [[1,1],[0,0],[-1,-1],[0,-2]],
+                [[1,-1],[0,0],[-1,1],[-2,0]],
+                [[-1,-1],[0,0],[1,1],[0,2]]
+            ];
         }
         else if(typeID==3){
             this.type = "squiggly";
@@ -120,6 +141,12 @@ class piece {
             this.squares.push(new square(x,y+1,this.color));
             this.squares.push(new square(x+1,y+1,this.color));
             this.squares.push(new square(x+1,y+2,this.color));
+            this.rotationTransform = [
+                [[-1,1],[0,0],[-1,-1],[0,-2]],
+                [[1,1],[0,0],[-1,1],[-2,0]],
+                [[1,-1],[0,0],[1,1],[0,2]],
+                [[-1,-1],[0,0],[1,-1],[2,0]]
+            ];
         }
         else if(typeID==4){
             this.type = "reverseSquiggly";
@@ -127,12 +154,24 @@ class piece {
             this.squares.push(new square(x+1,y+1,this.color));
             this.squares.push(new square(x,y+1,this.color));
             this.squares.push(new square(x,y+2,this.color));
+            this.rotationTransform = [
+                [[-1,1],[0,0],[1,1],[2,0]],
+                [[1,1],[0,0],[1,-1],[0,-2]],
+                [[1,-1],[0,0],[-1,-1],[-2,0]],
+                [[-1,-1],[0,0],[-1,1],[0,2]]
+            ];
         }
         else{
             this.type = "line";
             for(var i=0;i<4;i++){
                 this.squares.push(new square(x,y+i,this.color));                
             }
+            this.rotationTransform = [
+                [[-1,1],[0,0],[1,-1],[2,-2]],
+                [[1,-1],[0,0],[-1,1],[-2,2]],
+                [[-1,1],[0,0],[1,-1],[2,-2]],
+                [[1,-1],[0,0],[-1,1],[-2,2]]
+            ];
         }
 
     }
@@ -167,6 +206,19 @@ class piece {
             for(var i=0;i<this.squares.length;i++){
                 this.squares[i].drop();
             }            
+        }
+    }
+    rotate(){
+        for(var i=0; i<this.squares.length;i++){
+            this.squares[i].x += this.rotationTransform[this.rotation][i][0];
+            this.squares[i].y += this.rotationTransform[this.rotation][i][1];
+        }
+        this.rotation++;
+        if(this.rotation>3){
+            this.rotation = 0;
+        }
+        if(this.checkCollision("NONE")){
+            this.rotate();
         }
     }
     checkCollision(direction){
@@ -225,10 +277,22 @@ class piece {
                 }
             }
         }
+        if(direction=="NONE"){
+            for(var i=0; i<this.squares.length;i++){
+                if(this.squares[i].x < 0 || this.squares[i].x > gameWidth-1 || this.squares[i].y < 0){
+                    return true;
+                }
+                for(var j=0;j<gmBoard.pieces.length;j++){
+                    for(var k=0;k<gmBoard.pieces[j].squares.length;k++){
+                        if(this.squares[i].x == gmBoard.pieces[j].squares[k].x &&
+                            this.squares[i].y == gmBoard.pieces[j].squares[k].y){
+                                return true;
+                            }
+                    }
+                }
+            }
+        }
         return false;
-    }
-    checkCollisionByRelativeXY(){
-
     }
 }
 
