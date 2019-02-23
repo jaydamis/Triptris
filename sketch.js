@@ -191,7 +191,27 @@ class piece {
             this.squares[3].y = this.squares[3].y-(2*dir);
         }
         if(this.type=="elBlock"){
-            
+            var transform = [[0,0],[0,0],[0,0],[0,0]];
+            if(this.rotation==0){
+                transform = [[0,2],[-1,1],[0,0],[1,-1]];
+            }
+            else if(this.rotation==1){
+                transform = [[2,0],[1,1],[0,0],[-1,-1]];
+            }
+            else if(this.rotation==2){
+                transform = [[0,-2],[1,-1],[0,0],[-1,1]];
+            }
+            else if(this.rotation==3){
+                transform = [[-2,0],[-1,-1],[0,0],[1,1]]
+            }
+            for(var i=0; i<this.squares.length;i++){
+                this.squares[i].x += transform[i][0];
+                this.squares[i].y += transform[i][1];
+            }
+            this.rotation++;
+            if(this.rotation>4){
+                this.rotation = 0;
+            }
         }
         if(this.checkCollision("NONE")){
             this.rotate();
