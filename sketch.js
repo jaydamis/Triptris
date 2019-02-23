@@ -92,6 +92,11 @@ class piece {
     constructor() {
         this.status = "PRIMARY";
         this.rotation = 0;
+        this.rotationTransform = 
+            [[[0,0],[0,0],[0,0],[0,0]],
+            [[0,0],[0,0],[0,0],[0,0]],
+            [[0,0],[0,0],[0,0],[0,0]],
+            [[0,0],[0,0],[0,0],[0,0]]];
         var x=10;
         var y=0;
         this.color=[random()*255,random()*255,random()*255]
@@ -110,6 +115,12 @@ class piece {
             this.squares.push(new square(x+1,y,this.color));
             this.squares.push(new square(x+1,y+1,this.color));
             this.squares.push(new square(x+1,y+2,this.color));
+            this.rotationTransform = [
+                [[0,2],[-1,1],[0,0],[1,-1]],
+                [[2,0],[1,1],[0,0],[-1,-1]],
+                [[0,-2],[1,-1],[0,0],[-1,1]],
+                [[-2,0],[-1,-1],[0,0],[1,1]]
+            ];
         }
         else if(typeID==2){
             this.type = "reverseElBlock";
@@ -117,6 +128,12 @@ class piece {
             this.squares.push(new square(x+1,y+1,this.color));
             this.squares.push(new square(x+1,y+2,this.color));
             this.squares.push(new square(x,y+2,this.color));
+            this.rotationTransform = [
+                [[0,0],[0,0],[0,0],[0,0]],
+                [[0,0],[0,0],[0,0],[0,0]],
+                [[0,0],[0,0],[0,0],[0,0]],
+                [[0,0],[0,0],[0,0],[0,0]]
+            ];
         }
         else if(typeID==3){
             this.type = "squiggly";
@@ -124,6 +141,12 @@ class piece {
             this.squares.push(new square(x,y+1,this.color));
             this.squares.push(new square(x+1,y+1,this.color));
             this.squares.push(new square(x+1,y+2,this.color));
+            this.rotationTransform = [
+                [[0,0],[0,0],[0,0],[0,0]],
+                [[0,0],[0,0],[0,0],[0,0]],
+                [[0,0],[0,0],[0,0],[0,0]],
+                [[0,0],[0,0],[0,0],[0,0]]
+            ];
         }
         else if(typeID==4){
             this.type = "reverseSquiggly";
@@ -131,12 +154,24 @@ class piece {
             this.squares.push(new square(x+1,y+1,this.color));
             this.squares.push(new square(x,y+1,this.color));
             this.squares.push(new square(x,y+2,this.color));
+            this.rotationTransform = [
+                [[0,0],[0,0],[0,0],[0,0]],
+                [[0,0],[0,0],[0,0],[0,0]],
+                [[0,0],[0,0],[0,0],[0,0]],
+                [[0,0],[0,0],[0,0],[0,0]]
+            ];
         }
         else{
             this.type = "line";
             for(var i=0;i<4;i++){
                 this.squares.push(new square(x,y+i,this.color));                
             }
+            this.rotationTransform = [
+                [[-1,1],[0,0],[1,-1],[2,-2]],
+                [[1,-1],[0,0],[-1,1],[-2,2]],
+                [[-1,1],[0,0],[1,-1],[2,-2]],
+                [[1,-1],[0,0],[-1,1],[-2,2]]
+            ];
         }
 
     }
@@ -174,44 +209,13 @@ class piece {
         }
     }
     rotate(){
-        if(this.type=="line"){
-            var dir = -1;
-            if(this.rotation==0){
-                dir = 1;
-                this.rotation = 1;
-            }
-            else{
-                this.rotation = 0;
-            }
-            this.squares[0].x = this.squares[0].x-(1*dir);
-            this.squares[0].y = this.squares[0].y+(1*dir);
-            this.squares[2].x = this.squares[2].x+(1*dir);
-            this.squares[2].y = this.squares[2].y-(1*dir);
-            this.squares[3].x = this.squares[3].x+(2*dir);
-            this.squares[3].y = this.squares[3].y-(2*dir);
+        for(var i=0; i<this.squares.length;i++){
+            this.squares[i].x += this.rotationTransform[this.rotation][i][0];
+            this.squares[i].y += this.rotationTransform[this.rotation][i][1];
         }
-        if(this.type=="elBlock"){
-            var transform = [[0,0],[0,0],[0,0],[0,0]];
-            if(this.rotation==0){
-                transform = [[0,2],[-1,1],[0,0],[1,-1]];
-            }
-            else if(this.rotation==1){
-                transform = [[2,0],[1,1],[0,0],[-1,-1]];
-            }
-            else if(this.rotation==2){
-                transform = [[0,-2],[1,-1],[0,0],[-1,1]];
-            }
-            else if(this.rotation==3){
-                transform = [[-2,0],[-1,-1],[0,0],[1,1]]
-            }
-            for(var i=0; i<this.squares.length;i++){
-                this.squares[i].x += transform[i][0];
-                this.squares[i].y += transform[i][1];
-            }
-            this.rotation++;
-            if(this.rotation>4){
-                this.rotation = 0;
-            }
+        this.rotation++;
+        if(this.rotation>3){
+            this.rotation = 0;
         }
         if(this.checkCollision("NONE")){
             this.rotate();
