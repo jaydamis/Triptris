@@ -2,6 +2,7 @@ var canvasWidth = 640;
 var canvasHeight = 480;
 var gameWidth = 10;
 var bkgrndColor = [0,0,0];
+var sideColor = [90,120,150];
 var gmBoard;
 var piecey;
 var frame = 1;
@@ -24,6 +25,9 @@ function draw() {
         if(piecey.status == "REST"){
             gmBoard.pieces.push(piecey);
             piecey = new piece();
+            if(piecey.checkCollision("NONE")){
+                bkgrndColor = [90,120,150];
+            }
         }
     }
     frame++;
@@ -59,7 +63,9 @@ class gameBoard {
         for(var i=0;i<this.pieces.length;i++){
             this.pieces[i].draw();
         }
-        fill(80,40,200);
+    }
+    drawSideAreas() {
+        fill(sideColor);
         rect(0,0,this.minx*20,canvasHeight);
         rect((this.minx+gameWidth)*20,0,this.minx*20,canvasHeight);
     }
@@ -273,7 +279,7 @@ class piece {
                         if(this.squares[i].x-1 == gmBoard.pieces[j].squares[k].x &&
                             this.squares[i].y == gmBoard.pieces[j].squares[k].y){
                                 return true;
-                            }
+                        }
                     }
                 }
             }
