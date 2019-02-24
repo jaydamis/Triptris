@@ -1,8 +1,6 @@
-"use strict";
-
 var canvasWidth = 640;
 var canvasHeight = 480;
-var gameWidth = 20;
+var gameWidth = 10;
 var bkgrndColor = [0,0,0];
 var gmBoard;
 var piecey;
@@ -78,9 +76,19 @@ class gameBoard {
         for(var i=0;i<24;i++){
             var line = filled.filter(element => element[1]==i)
             if(line.length>=gameWidth){
-                bkgrndColor = [0,45,54]
+                this.clearLine(i);
             }
         }        
+    }
+    clearLine(line){
+        for(var i=0;i<this.pieces.length;i++){
+            for(var j=0;j<this.pieces[i].squares.length;j++){
+                if(this.pieces[i].squares[j].y==line){
+                    this.pieces[i].squares.splice(j,1);
+                }
+                
+            }
+        }
     }
     randomize() {
         for(var i=0;i<this.tiles.length;i++){
@@ -100,7 +108,7 @@ class piece {
             [[0,0],[0,0],[0,0],[0,0]],
             [[0,0],[0,0],[0,0],[0,0]],
             [[0,0],[0,0],[0,0],[0,0]]];
-        var x=10;
+        var x=gameWidth/2;
         var y=0;
         this.color=[random()*255,random()*255,random()*255]
         this.squares = new Array();
