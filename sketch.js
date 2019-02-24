@@ -1,9 +1,11 @@
+"use strict";
+
 var canvasWidth = 640;
 var canvasHeight = 480;
 var gameWidth = 20;
 var bkgrndColor = [0,0,0];
 var gmBoard;
-var piecey
+var piecey;
 var frame = 1;
 
 function setup() {
@@ -59,6 +61,9 @@ class gameBoard {
         for(var i=0;i<this.pieces.length;i++){
             this.pieces[i].draw();
         }
+        fill(80,40,200);
+        rect(0,0,this.minx*20,canvasHeight);
+        rect((this.minx+gameWidth)*20,0,this.minx*20,canvasHeight);
     }
     //Check each line to see if it is as wide as the game board.
     checkLineCompletion(){
@@ -75,9 +80,7 @@ class gameBoard {
             if(line.length>=gameWidth){
                 bkgrndColor = [0,45,54]
             }
-        }
-        //console.log(filled.filter(element => element[1]==23))
-        
+        }        
     }
     randomize() {
         for(var i=0;i<this.tiles.length;i++){
@@ -279,7 +282,8 @@ class piece {
         }
         if(direction=="NONE"){
             for(var i=0; i<this.squares.length;i++){
-                if(this.squares[i].x < 0 || this.squares[i].x > gameWidth-1 || this.squares[i].y < 0){
+                if(this.squares[i].x < 0 || this.squares[i].x > gameWidth-1 || 
+                    this.squares[i].y < 0 || this.squares[i].y > 23){
                     return true;
                 }
                 for(var j=0;j<gmBoard.pieces.length;j++){
