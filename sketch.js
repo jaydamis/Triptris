@@ -85,9 +85,16 @@ class gameBoard {
             for(var j=0;j<this.pieces[i].squares.length;j++){
                 if(this.pieces[i].squares[j].y==line){
                     this.pieces[i].squares.splice(j,1);
+                    j--;
                 }
-                
             }
+        }
+        for(var i=0;i<this.pieces.length;i++){
+            for(var j=0;j<this.pieces[i].squares.length;j++){
+                if(this.pieces[i].squares[j].y<line){
+                    this.pieces[i].squares[j].y++;
+                }
+            }           
         }
     }
     randomize() {
