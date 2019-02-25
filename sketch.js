@@ -63,6 +63,7 @@ class gameBoard {
         for(var i=0;i<this.pieces.length;i++){
             this.pieces[i].draw();
         }
+        this.drawSideAreas();
     }
     drawSideAreas() {
         fill(sideColor);
